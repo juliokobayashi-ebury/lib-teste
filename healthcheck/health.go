@@ -11,8 +11,9 @@ import (
 type Status string
 
 const (
-	StatusUp   Status = "UP"
-	StatusDown Status = "DOWN"
+	StatusUnknown Status = "UNKNOWN"
+	StatusUp      Status = "UP"
+	StatusDown    Status = "DOWN"
 )
 
 type Checker interface {
