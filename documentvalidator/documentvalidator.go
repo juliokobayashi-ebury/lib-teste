@@ -1,9 +1,16 @@
 package documentvalidator
 
 import (
+	"sync"
+
 	"github.com/juliokobayashi-ebury/lib-teste/documentvalidator/cnpjvalidator"
 	"github.com/juliokobayashi-ebury/lib-teste/documentvalidator/cpfvalidator"
 	"github.com/juliokobayashi-ebury/lib-teste/documentvalidator/documenthelpers"
+)
+
+var (
+	once                      sync.Once
+	documentValidatorInstance *DocumentValidator
 )
 
 type DocumentValidator struct {
@@ -11,7 +18,17 @@ type DocumentValidator struct {
 	cnpjValidator cnpjvalidator.CNPJValidator
 }
 
-func (ref DocumentValidator) IsValid(data string) bool {
+func NewDocumentValidator() *DocumentValidator {
+	once.Do(func() {
+		documentValidatorInstance = &DocumentValidator{
+			cpfValidator:  cpfvalidator.CPFValidator{},
+			cnpjValidator: cnpjvalidator.CNPJValidator{},
+		}
+	})
+	return documentValidatorInstance
+}
+
+func (ref *DocumentValidator) IsValid(data string) bool {
 	data = documenthelpers.SanitizeDocument(data)
 
 	if len(data) == 11 {
